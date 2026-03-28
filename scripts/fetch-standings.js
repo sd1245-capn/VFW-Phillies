@@ -3,7 +3,8 @@ const path = require("path");
 const fetch = require("node-fetch");
 
 const OUTPUT_PATH = path.join("data", "nl-east.html");
-const ESPN_URL = "https://site.web.api.espn.com/apis/v2/sports/baseball/mlb/standings?region=us&lang=en&contentorigin=espn";
+const ESPN_URL =
+  "https://site.web.api.espn.com/apis/v2/sports/baseball/mlb/standings?region=us&lang=en&contentorigin=espn";
 
 async function run() {
   try {
@@ -11,10 +12,22 @@ async function run() {
     const response = await fetch(ESPN_URL);
     const data = await response.json();
 
-    const nlEast = data.children
-      .find(div => div.name === "National League")
-      .standings.entries
-      .filter(team => team.division.name === "NL East");
+    // ESPN changed their structure — new path:
+    const leagues = data.children || [];
+    const nationalLeague = leagues.find((l) => l.name === "National League");
+
+    if (!nationalLeague) {
+      throw new Error("Could not find National League in ESPN data");
+    }
+
+    const entries = nationalLeague.standings?.entries || [];
+    const nlEast = entries.filter(
+      (team) => team.division?.name === "NL East"
+    );
+
+    if (nlEast.length === 0) {
+      throw new Error("No NL East teams found in ESPN data");
+    }
 
     let html = `
       <table style="width:100%; border-collapse: collapse; font-family: Arial;">
@@ -27,18 +40,16 @@ async function run() {
         </tr>
     `;
 
-    nlEast.forEach(team => {
-      const stats = team.stats.reduce((acc, s) => {
-        acc[s.name] = s.value;
-        return acc;
-      }, {});
+    nlEast.forEach((team) => {
+      const stats = {};
+      team.stats.forEach((s) => (stats[s.name] = s.value));
 
       html += `
         <tr>
           <td style="padding:4px;">${team.team.displayName}</td>
           <td style="padding:4px;">${stats.wins}</td>
           <td style="padding:4px;">${stats.losses}</td>
-          <td style="padding:4px;">${stats.winPercent.toFixed(3)}</td>
+          <td style="padding:4px;">${Number(stats.winPercent).toFixed(3)}</td>
           <td style="padding:4px;">${stats.gamesBehind}</td>
         </tr>
       `;
