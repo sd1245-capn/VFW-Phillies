@@ -1,5 +1,36 @@
+name: Update NL East Standings
+
 on:
   schedule:
     - cron: "0 * * * *"   # runs every hour
   workflow_dispatch:       # allows manual run
+
+jobs:
+  update-standings:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Run standings script
+        run: node scripts/fetch-standings.js
+
+      - name: Commit updated standings
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add data/nl-east.html
+          git commit -m "Update NL East standings" || echo "No changes to commit"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
 
