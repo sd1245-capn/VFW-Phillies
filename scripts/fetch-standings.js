@@ -1,6 +1,6 @@
-import fs from "fs";
-import path from "path";
-import fetch from "node-fetch";
+const fs = require("fs");
+const path = require("path");
+const fetch = require("node-fetch");
 
 const OUTPUT_PATH = path.join("data", "nl-east.html");
 const ESPN_URL = "https://site.web.api.espn.com/apis/v2/sports/baseball/mlb/standings?region=us&lang=en&contentorigin=espn";
@@ -57,4 +57,3 @@ async function run() {
 }
 
 run();
-
