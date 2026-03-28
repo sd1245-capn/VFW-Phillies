@@ -3,8 +3,10 @@ const path = require("path");
 const fetch = require("node-fetch");
 
 const OUTPUT_PATH = path.join("data", "nl-east.html");
+
+// NEW ESPN ENDPOINT (2026)
 const ESPN_URL =
-  "https://site.web.api.espn.com/apis/v2/sports/baseball/mlb/standings?region=us&lang=en&contentorigin=espn";
+  "https://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/standings?region=us&lang=en&contentorigin=espn";
 
 async function run() {
   try {
@@ -12,31 +14,23 @@ async function run() {
     const response = await fetch(ESPN_URL);
     const data = await response.json();
 
-    // ESPN 2026 structure: standings are now under data.children[x].standings.entries
-    const leagueContainers = data.children || [];
+    // Fetch the standings groups (divisions)
+    const groupsRes = await fetch(data.children.$ref);
+    const groupsData = await groupsRes.json();
 
-    const nationalLeague = leagueContainers.find(
-      (c) => c?.standings?.entries && c.name?.includes("National")
+    // Find NL East group
+    const nlEastGroup = groupsData.items.find((g) =>
+      g.name.includes("NL East")
     );
 
-    if (!nationalLeague) {
-      throw new Error("National League not found in ESPN data");
+    if (!nlEastGroup) {
+      throw new Error("NL East group not found in ESPN data");
     }
 
-    const entries = nationalLeague.standings.entries;
+    // Fetch NL East standings
+    const nlEastRes = await fetch(nlEastGroup.standings.$ref);
+    const nlEastData = await nlEastRes.json();
 
-    // Filter NL East teams
-    const nlEast = entries.filter(
-      (team) => team?.division?.name === "NL East"
-    );
-
-    if (nlEast.length === 0) {
-      console.log("DEBUG: Available divisions:");
-      console.log(entries.map((t) => t.division?.name));
-      throw new Error("No NL East teams found in ESPN data");
-    }
-
-    // Build HTML
     let html = `
       <table style="width:100%; border-collapse: collapse; font-family: Arial;">
         <tr>
@@ -48,27 +42,27 @@ async function run() {
         </tr>
     `;
 
-    nlEast.forEach((team) => {
+    for (const entry of nlEastData.entries) {
+      const teamRes = await fetch(entry.team.$ref);
+      const team = await teamRes.json();
+
       const stats = {};
-      team.stats.forEach((s) => (stats[s.name] = s.value));
+      entry.stats.forEach((s) => (stats[s.name] = s.value));
 
       html += `
         <tr>
-          <td style="padding:4px;">${team.team.displayName}</td>
+          <td style="padding:4px;">${team.displayName}</td>
           <td style="padding:4px;">${stats.wins}</td>
           <td style="padding:4px;">${stats.losses}</td>
           <td style="padding:4px;">${Number(stats.winPercent).toFixed(3)}</td>
           <td style="padding:4px;">${stats.gamesBehind}</td>
         </tr>
       `;
-    });
+    }
 
     html += `</table>`;
 
-    // Ensure /data exists
     fs.mkdirSync("data", { recursive: true });
-
-    // Write output file
     fs.writeFileSync(OUTPUT_PATH, html);
 
     console.log("Standings written to:", OUTPUT_PATH);
