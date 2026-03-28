@@ -54,13 +54,30 @@ body {
     padding-bottom: 6px;
 }
 
-/* IFRAMES */
-iframe {
+/* CUSTOM STANDINGS TABLE */
+.standings-table {
     width: 100%;
-    height: calc(100% - 45px);
-    border: none;
+    border-collapse: collapse;
+    font-size: 22px;
+    background: rgba(255,255,255,0.15);
     border-radius: 10px;
-    background: white;
+    overflow: hidden;
+}
+
+.standings-table th {
+    background: #ffcc00;
+    color: black;
+    padding: 8px;
+    font-size: 22px;
+}
+
+.standings-table td {
+    padding: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.standings-table tr:last-child td {
+    border-bottom: none;
 }
 
 /* NEWS SPANS FULL WIDTH */
@@ -106,16 +123,52 @@ iframe {
 <!-- NEXT GAME -->
 <div class="box">
     <div class="title">Next / Recent Game</div>
-    <iframe src="https://www.mlb.com/phillies/schedule"></iframe>
+    <iframe src="https://www.mlb.com/phillies/schedule" style="height:100%;"></iframe>
 </div>
 
-<!-- STANDINGS (SPORTSRADAR PUBLIC WIDGET — WORKS) -->
+<!-- CUSTOM NL EAST STANDINGS -->
 <div class="box">
-    <div class="title">MLB Standings</div>
-    <iframe 
-        src="https://widgets.sportradar.com/mlb/standings/1.0.0/en/standings.html?theme=light"
-        style="width:100%; height:100%; border:none; border-radius:10px; background:white;">
-    </iframe>
+    <div class="title">NL East Standings</div>
+
+    <table class="standings-table">
+        <tr>
+            <th>Team</th>
+            <th>W</th>
+            <th>L</th>
+            <th>GB</th>
+        </tr>
+        <tr>
+            <td>Phillies</td>
+            <td>0</td>
+            <td>0</td>
+            <td>—</td>
+        </tr>
+        <tr>
+            <td>Braves</td>
+            <td>0</td>
+            <td>0</td>
+            <td>—</td>
+        </tr>
+        <tr>
+            <td>Mets</td>
+            <td>0</td>
+            <td>0</td>
+            <td>—</td>
+        </tr>
+        <tr>
+            <td>Marlins</td>
+            <td>0</td>
+            <td>0</td>
+            <td>—</td>
+        </tr>
+        <tr>
+            <td>Nationals</td>
+            <td>0</td>
+            <td>0</td>
+            <td>—</td>
+        </tr>
+    </table>
+
 </div>
 
 <!-- NEWS -->
