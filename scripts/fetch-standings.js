@@ -12,23 +12,31 @@ async function run() {
     const response = await fetch(ESPN_URL);
     const data = await response.json();
 
-    // ESPN changed their structure — new path:
-    const leagues = data.children || [];
-    const nationalLeague = leagues.find((l) => l.name === "National League");
+    // ESPN 2026 structure: standings are now under data.children[x].standings.entries
+    const leagueContainers = data.children || [];
+
+    const nationalLeague = leagueContainers.find(
+      (c) => c?.standings?.entries && c.name?.includes("National")
+    );
 
     if (!nationalLeague) {
-      throw new Error("Could not find National League in ESPN data");
+      throw new Error("National League not found in ESPN data");
     }
 
-    const entries = nationalLeague.standings?.entries || [];
+    const entries = nationalLeague.standings.entries;
+
+    // Filter NL East teams
     const nlEast = entries.filter(
-      (team) => team.division?.name === "NL East"
+      (team) => team?.division?.name === "NL East"
     );
 
     if (nlEast.length === 0) {
+      console.log("DEBUG: Available divisions:");
+      console.log(entries.map((t) => t.division?.name));
       throw new Error("No NL East teams found in ESPN data");
     }
 
+    // Build HTML
     let html = `
       <table style="width:100%; border-collapse: collapse; font-family: Arial;">
         <tr>
@@ -57,7 +65,10 @@ async function run() {
 
     html += `</table>`;
 
+    // Ensure /data exists
     fs.mkdirSync("data", { recursive: true });
+
+    // Write output file
     fs.writeFileSync(OUTPUT_PATH, html);
 
     console.log("Standings written to:", OUTPUT_PATH);
