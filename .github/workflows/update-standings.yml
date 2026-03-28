@@ -2,8 +2,8 @@ name: Update NL East Standings
 
 on:
   schedule:
-    - cron: "0 * * * *"   # runs every hour
-  workflow_dispatch:       # allows manual run
+    - cron: "0 * * * *"
+  workflow_dispatch:
 
 jobs:
   update-standings:
@@ -21,8 +21,8 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies (if needed)
-        run: npm install || true
+      - name: Install node-fetch
+        run: npm install node-fetch@2
 
       - name: Run standings script
         run: node scripts/fetch-standings.js
