@@ -8,18 +8,12 @@ async function run() {
     console.log("Fetching standings from ESPN…");
 
     const response = await fetch(ESPN_URL);
-    const data = await response.json();
+    const text = await response.text();
 
-    console.log("=== DEBUG: TOP-LEVEL KEYS ===");
-    console.log(Object.keys(data));
+    console.log("=== RAW ESPN RESPONSE (first 2000 chars) ===");
+    console.log(text.substring(0, 2000));
 
-    console.log("\n=== DEBUG: children ===");
-    console.log(data.children);
-
-    console.log("\n=== DEBUG: FULL JSON (first 1000 chars) ===");
-    console.log(JSON.stringify(data).substring(0, 1000));
-
-    console.log("\nSTOPPED BEFORE PARSING — send this output to me.");
+    console.log("\n=== END RAW OUTPUT ===");
   } catch (err) {
     console.error("Error:", err);
   }
