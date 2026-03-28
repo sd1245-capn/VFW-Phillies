@@ -8,14 +8,22 @@ async function run() {
     console.log("Fetching standings from ESPN…");
 
     const response = await fetch(ESPN_URL);
+
+    console.log("=== DEBUG: STATUS ===");
+    console.log(response.status, response.statusText);
+
+    console.log("\n=== DEBUG: HEADERS ===");
+    console.log([...response.headers.entries()]);
+
     const text = await response.text();
 
-    console.log("=== RAW ESPN RESPONSE (first 2000 chars) ===");
+    console.log("\n=== DEBUG: RAW BODY (first 2000 chars) ===");
     console.log(text.substring(0, 2000));
 
-    console.log("\n=== END RAW OUTPUT ===");
+    console.log("\n=== END DEBUG ===");
   } catch (err) {
-    console.error("Error:", err);
+    console.error("=== DEBUG ERROR ===");
+    console.error(err);
   }
 }
 
