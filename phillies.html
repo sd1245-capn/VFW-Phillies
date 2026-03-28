@@ -1,188 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="300">
 <title>Phillies Dashboard</title>
 
 <style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #0b1f3a;
-    color: white;
-    overflow: hidden;
-}
+    body {
+        background: #0a0a0a;
+        color: white;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
 
-/* HEADER */
-.header {
-    background: #e81828;
-    padding: 15px;
-    text-align: center;
-    font-size: 42px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-}
+    .header {
+        background: #e81828;
+        padding: 20px;
+        text-align: center;
+        font-size: 42px;
+        font-weight: bold;
+        color: white;
+    }
 
-/* GRID LAYOUT */
-.grid {
-    display: grid;
-    grid-template-columns: 60% 40%;
-    grid-template-rows: 40% 60%;
-    height: calc(100vh - 80px);
-    gap: 12px;
-    padding: 12px;
-}
+    .container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
 
-/* MODERN CARD STYLE */
-.box {
-    background: rgba(255,255,255,0.08);
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    backdrop-filter: blur(6px);
-}
+    .box {
+        background: #1a1a1a;
+        padding: 15px;
+        border-radius: 10px;
+        height: 420px;
+        display: flex;
+        flex-direction: column;
+    }
 
-/* CARD TITLES */
-.title {
-    font-size: 26px;
-    margin-bottom: 10px;
-    color: #ffcc00;
-    font-weight: bold;
-    border-bottom: 2px solid #ffcc00;
-    padding-bottom: 6px;
-}
+    .title {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #ffcc00;
+        text-align: center;
+    }
 
-/* CUSTOM STANDINGS TABLE */
-.standings-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 22px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.standings-table th {
-    background: #ffcc00;
-    color: black;
-    padding: 8px;
-    font-size: 22px;
-}
-
-.standings-table td {
-    padding: 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-}
-
-.standings-table tr:last-child td {
-    border-bottom: none;
-}
-
-/* NEWS SPANS FULL WIDTH */
-.news {
-    grid-column: span 2;
-}
-
-/* TICKER */
-.ticker {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background: black;
-    color: #00ffcc;
-    font-size: 28px;
-    white-space: nowrap;
-    overflow: hidden;
-    padding: 6px 0;
-    border-top: 2px solid #00ffcc;
-}
-
-.ticker span {
-    display: inline-block;
-    padding-left: 100%;
-    animation: scroll 25s linear infinite;
-}
-
-@keyframes scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-100%); }
-}
+    iframe {
+        flex: 1;
+        width: 100%;
+        border: none;
+    }
 </style>
 </head>
 
 <body>
 
-<div class="header">
-⚾ PHILADELPHIA PHILLIES ⚾
-</div>
+<div class="header">PHILADELPHIA PHILLIES</div>
 
-<div class="grid">
+<div class="container">
 
-<!-- NEXT GAME -->
-<div class="box">
-    <div class="title">Next / Recent Game</div>
-    <iframe src="https://www.mlb.com/phillies/schedule" style="height:100%;"></iframe>
-</div>
+    <!-- Next / Recent Game -->
+    <div class="box">
+        <div class="title">Next / Recent Game</div>
+        <iframe src="https://www.espn.com/mlb/team/_/name/phi"></iframe>
+    </div>
 
-<!-- CUSTOM NL EAST STANDINGS -->
-<div class="box">
-    <div class="title">NL East Standings</div>
+    <!-- NL East Standings (Auto-Updating) -->
+    <div class="box">
+        <div class="title">NL East Standings</div>
+        <iframe src="data/nl-east.html"></iframe>
+    </div>
 
-    <table class="standings-table">
-        <tr>
-            <th>Team</th>
-            <th>W</th>
-            <th>L</th>
-            <th>GB</th>
-        </tr>
-        <tr>
-            <td>Phillies</td>
-            <td>0</td>
-            <td>0</td>
-            <td>—</td>
-        </tr>
-        <tr>
-            <td>Braves</td>
-            <td>0</td>
-            <td>0</td>
-            <td>—</td>
-        </tr>
-        <tr>
-            <td>Mets</td>
-            <td>0</td>
-            <td>0</td>
-            <td>—</td>
-        </tr>
-        <tr>
-            <td>Marlins</td>
-            <td>0</td>
-            <td>0</td>
-            <td>—</td>
-        </tr>
-        <tr>
-            <td>Nationals</td>
-            <td>0</td>
-            <td>0</td>
-            <td>—</td>
-        </tr>
-    </table>
+    <!-- Phillies News -->
+    <div class="box">
+        <div class="title">Latest Phillies News</div>
+        <iframe src="https://www.espn.com/mlb/team/_/name/phi"></iframe>
+    </div>
 
-</div>
+    <!-- Welcome / Custom Messages -->
+    <div class="box">
+        <div class="title">Welcome to the VFW</div>
+        <p style="font-size:24px; text-align:center; line-height:1.4;">
+            • Phillies Game On Tonight<br>
+            • Drink Specials Available<br>
+            • Support Our Veterans<br>
+            • Go Phillies!
+        </p>
+    </div>
 
-<!-- NEWS -->
-<div class="box news">
-    <div class="title">Latest Phillies News</div>
-    <iframe src="https://www.mlb.com/phillies/news"></iframe>
-</div>
-
-</div>
-
-<div class="ticker">
-<span>
-Welcome to the VFW • Phillies Game On Tonight • Drink Specials Available • Support Our Veterans • Go Phillies!
-</span>
 </div>
 
 </body>
