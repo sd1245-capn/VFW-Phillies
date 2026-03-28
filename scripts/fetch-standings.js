@@ -4,32 +4,36 @@ const fetch = require("node-fetch");
 
 const OUTPUT_PATH = path.join("data", "nl-east.html");
 
-// NEW ESPN ENDPOINT (2026)
+// Stable ESPN endpoint
 const ESPN_URL =
-  "https://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/standings?region=us&lang=en&contentorigin=espn";
+  "https://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/standings?type=0";
+
+async function fetchJson(url) {
+  const res = await fetch(url);
+  return await res.json();
+}
 
 async function run() {
   try {
     console.log("Fetching standings from ESPN…");
-    const response = await fetch(ESPN_URL);
-    const data = await response.json();
 
-    // Fetch the standings groups (divisions)
-    const groupsRes = await fetch(data.children.$ref);
-    const groupsData = await groupsRes.json();
+    // 1. Get root standings object
+    const root = await fetchJson(ESPN_URL);
 
-    // Find NL East group
-    const nlEastGroup = groupsData.items.find((g) =>
-      g.name.includes("NL East")
+    // 2. Get the list of groups (divisions)
+    const groups = await fetchJson(root.children.$ref);
+
+    // 3. Find NL East division
+    const nlEastGroup = groups.items.find((g) =>
+      g.name.toLowerCase().includes("nl east")
     );
 
     if (!nlEastGroup) {
-      throw new Error("NL East group not found in ESPN data");
+      throw new Error("NL East division not found in ESPN data");
     }
 
-    // Fetch NL East standings
-    const nlEastRes = await fetch(nlEastGroup.standings.$ref);
-    const nlEastData = await nlEastRes.json();
+    // 4. Fetch NL East standings
+    const nlEast = await fetchJson(nlEastGroup.standings.$ref);
 
     let html = `
       <table style="width:100%; border-collapse: collapse; font-family: Arial;">
@@ -42,9 +46,9 @@ async function run() {
         </tr>
     `;
 
-    for (const entry of nlEastData.entries) {
-      const teamRes = await fetch(entry.team.$ref);
-      const team = await teamRes.json();
+    // 5. Loop through each team entry
+    for (const entry of nlEast.entries) {
+      const team = await fetchJson(entry.team.$ref);
 
       const stats = {};
       entry.stats.forEach((s) => (stats[s.name] = s.value));
