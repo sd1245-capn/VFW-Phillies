@@ -1,3 +1,5 @@
+console.log("SCRIPT IS RUNNING");
+
 const fs = require("fs");
 const path = require("path");
 const fetch = require("node-fetch");
