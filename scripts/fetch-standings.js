@@ -1,29 +1,53 @@
+const fs = require("fs");
+const path = require("path");
 const fetch = require("node-fetch");
 
-const ESPN_URL =
-  "https://sports.core.api.espn.com/v2/sports/baseball/leagues/mlb/standings?type=0";
+const OUTPUT_PATH = path.join("data", "nl-east.html");
+
+const MLB_URL =
+  "https://statsapi.mlb.com/api/v1/standings?leagueId=104&division=204&season=2024&standingsTypes=regularSeason";
 
 async function run() {
   try {
-    console.log("Fetching standings from ESPN…");
+    console.log("Fetching NL East standings from MLB StatsAPI…");
 
-    const response = await fetch(ESPN_URL);
+    const response = await fetch(MLB_URL);
+    const data = await response.json();
 
-    console.log("=== DEBUG: STATUS ===");
-    console.log(response.status, response.statusText);
+    const records = data.records[0].teamRecords;
 
-    console.log("\n=== DEBUG: HEADERS ===");
-    console.log([...response.headers.entries()]);
+    let html = `
+      <table style="width:100%; border-collapse: collapse; font-family: Arial;">
+        <tr>
+          <th style="text-align:left; padding:4px;">Team</th>
+          <th style="padding:4px;">W</th>
+          <th style="padding:4px;">L</th>
+          <th style="padding:4px;">Pct</th>
+          <th style="padding:4px;">GB</th>
+        </tr>
+    `;
 
-    const text = await response.text();
+    for (const team of records) {
+      html += `
+        <tr>
+          <td style="padding:4px;">${team.team.name}</td>
+          <td style="padding:4px;">${team.wins}</td>
+          <td style="padding:4px;">${team.losses}</td>
+          <td style="padding:4px;">${team.winningPercentage}</td>
+          <td style="padding:4px;">${team.gamesBack}</td>
+        </tr>
+      `;
+    }
 
-    console.log("\n=== DEBUG: RAW BODY (first 2000 chars) ===");
-    console.log(text.substring(0, 2000));
+    html += `</table>`;
 
-    console.log("\n=== END DEBUG ===");
+    fs.mkdirSync("data", { recursive: true });
+    fs.writeFileSync(OUTPUT_PATH, html);
+
+    console.log("Standings written to:", OUTPUT_PATH);
   } catch (err) {
-    console.error("=== DEBUG ERROR ===");
-    console.error(err);
+    console.error("Error fetching or writing standings:", err);
+    process.exit(1);
   }
 }
 
