@@ -1,52 +1,102 @@
-console.log("SCRIPT IS RUNNING");
-
+const fetch = require("node-fetch");
 const fs = require("fs");
 const path = require("path");
-const fetch = require("node-fetch");
-
-const OUTPUT_PATH = path.join("data", "nl-east.html");
 
 const MLB_URL =
   "https://statsapi.mlb.com/api/v1/standings?leagueId=104&division=204&standingsTypes=regularSeason";
 
 async function run() {
   try {
-    console.log("Fetching NL East standings from MLB StatsAPI…");
+    console.log("Fetching MLB standings...");
 
     const response = await fetch(MLB_URL);
     const data = await response.json();
 
     const records = data.records[0].teamRecords;
 
-    let html = `
-      <table style="width:100%; border-collapse: collapse; font-family: Arial;">
-        <tr>
-          <th style="text-align:left; padding:4px;">Team</th>
-          <th style="padding:4px;">W</th>
-          <th style="padding:4px;">L</th>
-          <th style="padding:4px;">Pct</th>
-          <th style="padding:4px;">GB</th>
-        </tr>
-    `;
+    // Sort standings by best record
+    records.sort((a, b) => {
+      const pctA = parseFloat(a.winningPercentage);
+      const pctB = parseFloat(b.winningPercentage);
 
+      if (pctA !== pctB) return pctB - pctA;
+      if (a.wins !== b.wins) return b.wins - a.wins;
+      return a.losses - b.losses;
+    });
+
+    // Build ESPN-style HTML
+    let html = `
+<style>
+  .standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 22px;
+  }
+
+  .standings-header {
+    background: #0d253f;
+    color: white;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .standings-row:nth-child(even) {
+    background: #f7f7f7;
+  }
+
+  .phillies-row {
+    background: #e81828 !important;
+    color: white !important;
+    font-weight: bold;
+  }
+</style>
+
+<table class="standings-table">
+  <tr class="standings-header">
+    <th>Team</th>
+    <th>W</th>
+    <th>L</th>
+    <th>Pct</th>
+    <th>GB</th>
+  </tr>
+`;
+
+    // Add each team row
     for (const team of records) {
+      const name = team.team.name;
+      const wins = team.wins;
+      const losses = team.losses;
+      const pct = team.winningPercentage;
+      const gb = team.gamesBack === "-" ? "-" : team.gamesBack;
+
+      const isPhillies = name.toLowerCase().includes("phillies");
+      const rowClass = isPhillies ? "phillies-row" : "standings-row";
+
       html += `
-        <tr>
-          <td style="padding:4px;">${team.team.name}</td>
-          <td style="padding:4px;">${team.wins}</td>
-          <td style="padding:4px;">${team.losses}</td>
-          <td style="padding:4px;">${team.winningPercentage}</td>
-          <td style="padding:4px;">${team.gamesBack}</td>
-        </tr>
-      `;
+  <tr class="${rowClass}">
+    <td>${name}</td>
+    <td>${wins}</td>
+    <td>${losses}</td>
+    <td>${pct}</td>
+    <td>${gb}</td>
+  </tr>
+`;
     }
 
     html += `</table>`;
 
-    fs.mkdirSync("data", { recursive: true });
-    fs.writeFileSync(OUTPUT_PATH, html);
+    // Write file
+    const outputPath = path.join("data", "nl-east.html");
+    fs.writeFileSync(outputPath, html);
 
-    console.log("Standings written to:", OUTPUT_PATH);
+    console.log("Standings written to:", outputPath);
   } catch (err) {
     console.error("Error fetching or writing standings:", err);
     process.exit(1);
