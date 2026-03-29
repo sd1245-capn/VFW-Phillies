@@ -1,1 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Phillies Dashboard</title>
+
+<style>
+    body {
+        background: #0a0a0a;
+        color: white;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .header {
+        background: #e81828;
+        padding: 20px;
+        text-align: center;
+        font-size: 42px;
+        font-weight: bold;
+        color: white;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .box {
+        background: #1a1a1a;
+        padding: 15px;
+        border-radius: 10px;
+        height: 600px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .standings-box {
+        height: 800px;
+    }
+
+    .title {
+        font-size: 26px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #ffcc00;
+        text-align: center;
+    }
+
+    iframe {
+        width: 100%;
+        border: none;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="header">PHILADELPHIA PHILLIES</div>
+
+<div class="container">
+
+    <!-- Next / Recent Game -->
+    <div class="box">
+        <div class="title">Next / Recent Game</div>
+        <iframe src="https://www.espn.com/mlb/team/_/name/phi" style="height: 100%;"></iframe>
+    </div>
+
+    <!-- NL East Standings (Auto-Updating) -->
+    <div class="box standings-box">
+        <div class="title">NL East Standings</div>
+        <iframe src="https://sd1245-capn.github.io/VFW-Phillies/data/nl-east.html?nocache=1" style="height: 100%;"></iframe>
+    </div>
+
+    <!-- Phillies News -->
+    <div class="box">
+        <div class="title">Latest Phillies News</div>
+        <iframe src="https://www.espn.com/mlb/team/_/name/phi" style="height: 100%;"></iframe>
+    </div>
+
+    <!-- Welcome / Custom Messages -->
+    <div class="box">
+        <div class="title">Welcome to the VFW</div>
+        <p style="font-size:24px; text-align:center; line-height:1.4;">
+            • Phillies Game On Tonight<br>
+            • Drink Specials Available<br>
+            • Support Our Veterans<br>
+            • Go Phillies!
+        </p>
+    </div>
+
+</div>
+
+</body>
+</html>
 
