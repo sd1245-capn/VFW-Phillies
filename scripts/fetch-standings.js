@@ -5,7 +5,7 @@ const fetch = require("node-fetch");
 const OUTPUT_PATH = path.join("data", "nl-east.html");
 
 const MLB_URL =
-  "https://statsapi.mlb.com/api/v1/standings?leagueId=104&division=204&season=2024&standingsTypes=regularSeason";
+  "https://statsapi.mlb.com/api/v1/standings?leagueId=104&division=204&standingsTypes=regularSeason";
 
 async function run() {
   try {
