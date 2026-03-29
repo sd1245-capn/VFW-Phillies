@@ -1,50 +1,82 @@
 
-      <table style="width:100%; border-collapse: collapse; font-family: Arial;">
-        <tr>
-          <th style="text-align:left; padding:4px;">Team</th>
-          <th style="padding:4px;">W</th>
-          <th style="padding:4px;">L</th>
-          <th style="padding:4px;">Pct</th>
-          <th style="padding:4px;">GB</th>
-        </tr>
-    
-        <tr>
-          <td style="padding:4px;">Marlins</td>
-          <td style="padding:4px;">2</td>
-          <td style="padding:4px;">0</td>
-          <td style="padding:4px;">1.000</td>
-          <td style="padding:4px;">-</td>
-        </tr>
-      
-        <tr>
-          <td style="padding:4px;">Mets</td>
-          <td style="padding:4px;">2</td>
-          <td style="padding:4px;">0</td>
-          <td style="padding:4px;">1.000</td>
-          <td style="padding:4px;">-</td>
-        </tr>
-      
-        <tr>
-          <td style="padding:4px;">Braves</td>
-          <td style="padding:4px;">1</td>
-          <td style="padding:4px;">0</td>
-          <td style="padding:4px;">1.000</td>
-          <td style="padding:4px;">0.5</td>
-        </tr>
-      
-        <tr>
-          <td style="padding:4px;">Nationals</td>
-          <td style="padding:4px;">1</td>
-          <td style="padding:4px;">1</td>
-          <td style="padding:4px;">.500</td>
-          <td style="padding:4px;">1.0</td>
-        </tr>
-      
-        <tr>
-          <td style="padding:4px;">Phillies</td>
-          <td style="padding:4px;">1</td>
-          <td style="padding:4px;">1</td>
-          <td style="padding:4px;">.500</td>
-          <td style="padding:4px;">1.0</td>
-        </tr>
-      </table>
+<style>
+  .standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    font-size: 22px;
+  }
+
+  .standings-header {
+    background: #0d253f;
+    color: white;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .standings-row:nth-child(even) {
+    background: #f7f7f7;
+  }
+
+  .phillies-row {
+    background: #e81828 !important;
+    color: white !important;
+    font-weight: bold;
+  }
+</style>
+
+<table class="standings-table">
+  <tr class="standings-header">
+    <th>Team</th>
+    <th>W</th>
+    <th>L</th>
+    <th>Pct</th>
+    <th>GB</th>
+  </tr>
+
+  <tr class="standings-row">
+    <td>Marlins</td>
+    <td>2</td>
+    <td>0</td>
+    <td>1.000</td>
+    <td>-</td>
+  </tr>
+
+  <tr class="standings-row">
+    <td>Mets</td>
+    <td>2</td>
+    <td>0</td>
+    <td>1.000</td>
+    <td>-</td>
+  </tr>
+
+  <tr class="standings-row">
+    <td>Braves</td>
+    <td>1</td>
+    <td>0</td>
+    <td>1.000</td>
+    <td>0.5</td>
+  </tr>
+
+  <tr class="standings-row">
+    <td>Nationals</td>
+    <td>1</td>
+    <td>1</td>
+    <td>.500</td>
+    <td>1.0</td>
+  </tr>
+
+  <tr class="phillies-row">
+    <td>Phillies</td>
+    <td>1</td>
+    <td>1</td>
+    <td>.500</td>
+    <td>1.0</td>
+  </tr>
+</table>
